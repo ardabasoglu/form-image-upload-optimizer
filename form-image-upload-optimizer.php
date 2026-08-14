@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Form Image Upload Optimizer
  * Description: Compresses form image uploads and converts HEIC/HEIF attachments to JPG before email delivery.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Form Image Upload Optimizer Contributors
  * Requires at least: 5.8
  * Requires PHP: 7.4
@@ -224,7 +224,6 @@ final class FormImageUploadOptimizer
         }
 
         if (!class_exists('Imagick')) {
-            error_log('Form Image Upload Optimizer: HEIC/HEIF conversion requires the PHP Imagick extension. File was not converted: ' . $real_path);
             return null;
         }
 
@@ -257,19 +256,17 @@ final class FormImageUploadOptimizer
                 $image->clear();
                 $image->destroy();
             }
-            @unlink($target_path);
-            error_log('Form Image Upload Optimizer: unable to convert HEIC/HEIF to JPG for ' . $real_path . ' - ' . $exception->getMessage());
+            wp_delete_file($target_path);
             return null;
         }
 
         clearstatcache(true, $target_path);
         if (!is_file($target_path) || filesize($target_path) === false || filesize($target_path) <= 0) {
-            @unlink($target_path);
+            wp_delete_file($target_path);
             return null;
         }
 
-        @chmod($target_path, 0644);
-        @unlink($real_path);
+        wp_delete_file($real_path);
 
         return $target_path;
     }
@@ -303,8 +300,12 @@ final class FormImageUploadOptimizer
             $file_name = $candidate;
         }
 
+        if (!function_exists('wp_is_writable')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+
         $target_path = $directory . DIRECTORY_SEPARATOR . $file_name;
-        return is_writable($directory) ? $target_path : null;
+        return wp_is_writable($directory) ? $target_path : null;
     }
 
     private static function auto_orient_imagick_image($image): void
@@ -383,7 +384,11 @@ final class FormImageUploadOptimizer
         }
 
         $real_path = realpath($file_path);
-        if ($real_path === false || isset(self::$processed_files[$real_path]) || !is_file($real_path) || !is_readable($real_path) || !is_writable($real_path)) {
+        if (!function_exists('wp_is_writable')) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+        }
+
+        if ($real_path === false || isset(self::$processed_files[$real_path]) || !is_file($real_path) || !is_readable($real_path) || !wp_is_writable($real_path)) {
             return false;
         }
 
@@ -410,7 +415,6 @@ final class FormImageUploadOptimizer
 
         $editor = wp_get_image_editor($real_path);
         if (is_wp_error($editor)) {
-            error_log('Form Image Upload Optimizer: unable to open image editor for ' . $real_path . ' - ' . $editor->get_error_message());
             return false;
         }
 
@@ -436,10 +440,7 @@ final class FormImageUploadOptimizer
 
         $saved = $editor->save($temp_file, $mime_type);
         if (is_wp_error($saved) || empty($saved['path']) || !is_string($saved['path']) || !is_file($saved['path'])) {
-            @unlink($temp_file);
-            if (is_wp_error($saved)) {
-                error_log('Form Image Upload Optimizer: unable to save compressed image for ' . $real_path . ' - ' . $saved->get_error_message());
-            }
+            wp_delete_file($temp_file);
             return false;
         }
 
@@ -448,27 +449,20 @@ final class FormImageUploadOptimizer
 
         $compressed_size = filesize($compressed_path);
         if ($compressed_size === false || $compressed_size <= 0) {
-            @unlink($compressed_path);
+            wp_delete_file($compressed_path);
             return false;
         }
 
         if (!empty($settings['keep_original_if_larger']) && $compressed_size >= $original_size) {
-            @unlink($compressed_path);
+            wp_delete_file($compressed_path);
             return false;
         }
 
-        $permissions = fileperms($real_path);
-        if (!@rename($compressed_path, $real_path)) {
-            if (!@copy($compressed_path, $real_path)) {
-                @unlink($compressed_path);
-                return false;
-            }
-            @unlink($compressed_path);
+        if (!copy($compressed_path, $real_path)) {
+            wp_delete_file($compressed_path);
+            return false;
         }
-
-        if ($permissions !== false) {
-            @chmod($real_path, $permissions & 0777);
-        }
+        wp_delete_file($compressed_path);
 
         clearstatcache(true, $real_path);
         return true;
