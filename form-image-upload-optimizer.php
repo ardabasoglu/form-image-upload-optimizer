@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Form Image Upload Optimizer
  * Description: Compresses form image uploads and converts HEIC/HEIF attachments to JPG before email delivery.
- * Version: 1.1.1
+ * Version: 1.1.2
  * Author: Form Image Upload Optimizer Contributors
  * Requires at least: 5.8
  * Requires PHP: 7.4

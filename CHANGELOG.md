@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+
+- Remove non-standard root markdown file from production plugin package.
+
 ## 1.1.1
 
 - Address Plugin Check findings for production logging, filesystem deletion/move/chmod alternatives, and readme tag count.
