@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.3
+
+- Add compatibility for Drag and Drop Multiple File Upload for Contact Form 7 by optimizing posted upload URLs before that plugin builds mail attachments.
+
 ## 1.1.2
 
 - Remove non-standard root markdown file from production plugin package.

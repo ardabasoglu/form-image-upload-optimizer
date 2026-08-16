@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Form Image Upload Optimizer
  * Description: Compresses form image uploads and converts HEIC/HEIF attachments to JPG before email delivery.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: Form Image Upload Optimizer Contributors
  * Requires at least: 5.8
  * Requires PHP: 7.4
@@ -37,6 +37,7 @@ final class FormImageUploadOptimizer
     public static function init(): void
     {
         add_filter('wp_handle_upload', [__CLASS__, 'compress_wp_upload'], 20);
+        add_filter('wpcf7_posted_data', [__CLASS__, 'optimize_posted_data_upload_urls'], 99);
         add_action('wpcf7_before_send_mail', [__CLASS__, 'compress_contact_form_7_uploads'], 5);
         add_filter('wpcf7_mail_components', [__CLASS__, 'replace_contact_form_7_mail_attachments'], 20, 3);
         add_action('admin_menu', [__CLASS__, 'add_settings_page']);
@@ -74,6 +75,112 @@ final class FormImageUploadOptimizer
         self::compress_image_file($upload['file'], $mime);
 
         return $upload;
+    }
+
+    /**
+     * Optimize uploaded-file URLs stored in CF7 posted data.
+     *
+     * This supports add-ons such as Drag and Drop Multiple File Upload for Contact Form 7,
+     * which uploads files by AJAX, stores upload URLs in posted data, and later builds
+     * mail attachments from those URLs.
+     *
+     * @param mixed $posted_data
+     * @return mixed
+     */
+    public static function optimize_posted_data_upload_urls($posted_data)
+    {
+        if (!is_array($posted_data)) {
+            return $posted_data;
+        }
+
+        $uploads = wp_get_upload_dir();
+        if (empty($uploads['baseurl']) || empty($uploads['basedir']) || !is_string($uploads['baseurl']) || !is_string($uploads['basedir'])) {
+            return $posted_data;
+        }
+
+        return self::optimize_posted_data_value($posted_data, $uploads['baseurl'], $uploads['basedir']);
+    }
+
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
+    private static function optimize_posted_data_value($value, string $base_url, string $base_dir)
+    {
+        if (is_array($value)) {
+            foreach ($value as $key => $item) {
+                $value[$key] = self::optimize_posted_data_value($item, $base_url, $base_dir);
+            }
+
+            return $value;
+        }
+
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        return self::optimize_upload_url_string($value, $base_url, $base_dir);
+    }
+
+    private static function optimize_upload_url_string(string $value, string $base_url, string $base_dir): string
+    {
+        $url = wp_unslash($value);
+        $base_url = untrailingslashit($base_url);
+        if (strpos($url, $base_url . '/') !== 0) {
+            return $value;
+        }
+
+        $path = wp_parse_url($url, PHP_URL_PATH);
+        $base_path = wp_parse_url($base_url, PHP_URL_PATH);
+        if (!is_string($path)) {
+            return $value;
+        }
+
+        $relative_path = $path;
+        if (is_string($base_path) && $base_path !== '' && strpos($path, $base_path) === 0) {
+            $relative_path = substr($path, strlen($base_path));
+        }
+        $relative_path = ltrim(rawurldecode($relative_path), '/');
+        if ($relative_path === '' || strpos($relative_path, '../') !== false) {
+            return $value;
+        }
+
+        $base_real = realpath($base_dir);
+        $file_real = realpath(wp_normalize_path(trailingslashit($base_dir) . $relative_path));
+        if ($base_real === false || $file_real === false || strpos(wp_normalize_path($file_real), wp_normalize_path($base_real)) !== 0) {
+            return $value;
+        }
+
+        $converted_path = self::convert_heic_heif_to_jpeg($file_real, null);
+        if ($converted_path !== null) {
+            self::compress_image_file($converted_path, 'image/jpeg');
+            return self::upload_path_to_url($converted_path, $base_url, $base_dir) ?: $value;
+        }
+
+        self::compress_image_file($file_real, null);
+        return $value;
+    }
+
+    private static function upload_path_to_url(string $file_path, string $base_url, string $base_dir): ?string
+    {
+        $base_real = realpath($base_dir);
+        $file_real = realpath($file_path);
+        if ($base_real === false || $file_real === false) {
+            return null;
+        }
+
+        $base_real = wp_normalize_path($base_real);
+        $file_real = wp_normalize_path($file_real);
+        if (strpos($file_real, $base_real) !== 0) {
+            return null;
+        }
+
+        $relative = ltrim(substr($file_real, strlen($base_real)), '/');
+        if ($relative === '') {
+            return null;
+        }
+
+        return untrailingslashit($base_url) . '/' . str_replace('%2F', '/', rawurlencode($relative));
     }
 
     /**

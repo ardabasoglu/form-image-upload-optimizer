@@ -4,7 +4,7 @@ Tags: image compression, file uploads, forms, contact form 7, heic
 Requires at least: 5.8
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,6 +22,7 @@ Visitors often upload full-size phone photos. These files can make notification 
 * Convert HEIC/HEIF files to JPG when the server supports it.
 * Resize large images to configurable maximum dimensions.
 * Optimize Contact Form 7 temporary uploads before mail delivery.
+* Optimize image uploads from Drag and Drop Multiple File Upload for Contact Form 7 before mail delivery.
 * Replace converted HEIC/HEIF Contact Form 7 attachments with JPG files.
 * Skip small files below a configurable threshold.
 * Keep the original when optimization would make a file larger.
@@ -74,6 +75,9 @@ No. Optimization happens server-side during WordPress or Contact Form 7 upload h
 It works with standard WordPress upload handling and has specific support for Contact Form 7. Other form plugins may work if they use the standard WordPress upload pipeline. Plugin-specific integrations can be added later.
 
 == Changelog ==
+
+= 1.1.3 =
+* Add compatibility for Drag and Drop Multiple File Upload for Contact Form 7 by optimizing posted upload URLs before that plugin builds mail attachments.
 
 = 1.1.2 =
 * Remove non-standard root markdown file from production plugin package.

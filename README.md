@@ -13,6 +13,7 @@ Many form submissions include large phone photos. Those files can make notificat
 - Includes Contact Form 7 support:
   - optimizes temporary uploaded files before mail is sent
   - replaces converted HEIC/HEIF mail attachments with JPG files
+- Includes compatibility for **Drag and Drop Multiple File Upload for Contact Form 7** by optimizing uploaded file URLs before that add-on builds email attachments.
 - Skips small files below a configurable threshold.
 - Keeps the original file if optimization would make it larger.
 - Adds a settings page under **Settings → Form Image Upload Optimizer**.
@@ -66,6 +67,7 @@ Best tested path:
 
 - WordPress upload handling
 - Contact Form 7 upload fields and mail attachments
+- Drag and Drop Multiple File Upload for Contact Form 7 upload fields and mail attachments
 
 Other form plugins may work if they use the standard WordPress upload pipeline. If a form plugin stores temporary files and builds emails without WordPress upload handling, it may need a plugin-specific integration hook.
 
