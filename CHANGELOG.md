@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0
+
+- Rename plugin to Ardalo Form Upload Optimizer and update the text domain/slug for WordPress.org review.
+
 ## 1.1.3
 
 - Add compatibility for Drag and Drop Multiple File Upload for Contact Form 7 by optimizing posted upload URLs before that plugin builds mail attachments.

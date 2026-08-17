@@ -1,6 +1,6 @@
-# Form Image Upload Optimizer
+# Ardalo Form Upload Optimizer
 
-Form Image Upload Optimizer is a lightweight WordPress plugin for websites that receive image uploads through forms.
+Ardalo Form Upload Optimizer is a lightweight WordPress plugin for websites that receive image uploads through forms.
 
 Many form submissions include large phone photos. Those files can make notification emails heavy, fill mailboxes, slow down workflows, and consume unnecessary server storage. This plugin optimizes uploaded images server-side before they are attached to form emails or stored through normal WordPress upload handling.
 
@@ -16,7 +16,7 @@ Many form submissions include large phone photos. Those files can make notificat
 - Includes compatibility for **Drag and Drop Multiple File Upload for Contact Form 7** by optimizing uploaded file URLs before that add-on builds email attachments.
 - Skips small files below a configurable threshold.
 - Keeps the original file if optimization would make it larger.
-- Adds a settings page under **Settings → Form Image Upload Optimizer**.
+- Adds a settings page under **Settings → Ardalo Form Upload Optimizer**.
 
 ## Who this is for
 
@@ -33,9 +33,9 @@ Use this plugin if your WordPress site has forms where visitors upload images, f
 
 ## Installation
 
-1. Upload the `form-image-upload-optimizer` folder to `wp-content/plugins/`, or install the ZIP from WordPress Admin → Plugins → Add New → Upload Plugin.
-2. Activate **Form Image Upload Optimizer**.
-3. Go to **Settings → Form Image Upload Optimizer**.
+1. Upload the `ardalo-form-upload-optimizer` folder to `wp-content/plugins/`, or install the ZIP from WordPress Admin → Plugins → Add New → Upload Plugin.
+2. Activate **Ardalo Form Upload Optimizer**.
+3. Go to **Settings → Ardalo Form Upload Optimizer**.
 4. Submit a test form with image attachments.
 5. Confirm the received email attachments are smaller and visually acceptable.
 
@@ -59,7 +59,7 @@ HEIC/HEIF conversion requires:
 - PHP `Imagick` extension
 - ImageMagick with `HEIC` or `HEIF` decoding support
 
-If the server does not support this, the plugin logs a message, leaves HEIC/HEIF files unchanged, and shows a warning on its settings page. JPEG/PNG/WebP optimization still works with WordPress image editing support through GD or Imagick.
+If the server does not support this, the plugin leaves HEIC/HEIF files unchanged and shows a warning on its settings page. JPEG/PNG/WebP optimization still works with WordPress image editing support through GD or Imagick.
 
 ## Compatibility
 
@@ -69,6 +69,8 @@ Best tested path:
 - Contact Form 7 upload fields and mail attachments
 - Drag and Drop Multiple File Upload for Contact Form 7 upload fields and mail attachments
 
+This plugin is independent and is not affiliated with or endorsed by Contact Form 7 or Drag and Drop Multiple File Upload for Contact Form 7.
+
 Other form plugins may work if they use the standard WordPress upload pipeline. If a form plugin stores temporary files and builds emails without WordPress upload handling, it may need a plugin-specific integration hook.
 
 ## Development
@@ -76,13 +78,13 @@ Other form plugins may work if they use the standard WordPress upload pipeline. 
 Run a syntax check:
 
 ```bash
-php -l form-image-upload-optimizer/form-image-upload-optimizer.php
+php -l ardalo-form-upload-optimizer/ardalo-form-upload-optimizer.php
 ```
 
 Build an installable ZIP from the parent directory:
 
 ```bash
-zip -r form-image-upload-optimizer.zip form-image-upload-optimizer
+zip -r ardalo-form-upload-optimizer.zip ardalo-form-upload-optimizer
 ```
 
 ## License

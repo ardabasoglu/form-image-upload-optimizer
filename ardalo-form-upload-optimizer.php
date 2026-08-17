@@ -1,22 +1,22 @@
 <?php
 /**
- * Plugin Name: Form Image Upload Optimizer
- * Description: Compresses form image uploads and converts HEIC/HEIF attachments to JPG before email delivery.
- * Version: 1.1.3
- * Author: Form Image Upload Optimizer Contributors
+ * Plugin Name: Ardalo Form Upload Optimizer
+ * Description: Optimizes form image uploads and converts HEIC/HEIF attachments to JPG before email delivery.
+ * Version: 1.2.0
+ * Author: Ardalo Form Upload Optimizer Contributors
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * License: GPL-2.0-or-later
- * Text Domain: form-image-upload-optimizer
+ * Text Domain: ardalo-form-upload-optimizer
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-final class FormImageUploadOptimizer
+final class ArdaloFormUploadOptimizer
 {
-    private const OPTION_NAME = 'form_image_upload_optimizer_options';
+    private const OPTION_NAME = 'ardalo_form_upload_optimizer_options';
     private const DEFAULTS = [
         'enabled' => 1,
         'jpeg_quality' => 72,
@@ -259,10 +259,10 @@ final class FormImageUploadOptimizer
     public static function add_settings_page(): void
     {
         add_options_page(
-            __('Form Image Upload Optimizer', 'form-image-upload-optimizer'),
-            __('Form Image Upload Optimizer', 'form-image-upload-optimizer'),
+            __('Ardalo Form Upload Optimizer', 'ardalo-form-upload-optimizer'),
+            __('Ardalo Form Upload Optimizer', 'ardalo-form-upload-optimizer'),
             'manage_options',
-            'form-image-upload-optimizer',
+            'ardalo-form-upload-optimizer',
             [__CLASS__, 'render_settings_page']
         );
     }
@@ -270,7 +270,7 @@ final class FormImageUploadOptimizer
     public static function register_settings(): void
     {
         register_setting(
-            'form_image_upload_optimizer',
+            'ardalo_form_upload_optimizer',
             self::OPTION_NAME,
             [
                 'type' => 'array',
@@ -643,8 +643,8 @@ final class FormImageUploadOptimizer
      */
     public static function plugin_action_links(array $links): array
     {
-        $settings_url = admin_url('options-general.php?page=form-image-upload-optimizer');
-        array_unshift($links, '<a href="' . esc_url($settings_url) . '">' . esc_html__('Settings', 'form-image-upload-optimizer') . '</a>');
+        $settings_url = admin_url('options-general.php?page=ardalo-form-upload-optimizer');
+        array_unshift($links, '<a href="' . esc_url($settings_url) . '">' . esc_html__('Settings', 'ardalo-form-upload-optimizer') . '</a>');
         return $links;
     }
 
@@ -657,55 +657,55 @@ final class FormImageUploadOptimizer
         $options = self::options();
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Form Image Upload Optimizer', 'form-image-upload-optimizer'); ?></h1>
-            <p><?php esc_html_e('Compress JPEG, PNG, and WebP images uploaded through WordPress and Contact Form 7 before they are emailed or stored. HEIC/HEIF uploads are converted to compressed JPG when the server supports Imagick HEIC/HEIF decoding.', 'form-image-upload-optimizer'); ?></p>
+            <h1><?php esc_html_e('Ardalo Form Upload Optimizer', 'ardalo-form-upload-optimizer'); ?></h1>
+            <p><?php esc_html_e('Compress JPEG, PNG, and WebP images uploaded through WordPress and Contact Form 7 before they are emailed or stored. HEIC/HEIF uploads are converted to compressed JPG when the server supports Imagick HEIC/HEIF decoding.', 'ardalo-form-upload-optimizer'); ?></p>
             <?php if (!self::heic_conversion_available()) : ?>
                 <div class="notice notice-warning inline">
-                    <p><?php esc_html_e('HEIC/HEIF to JPG conversion is not currently available on this server. Ask the host to enable the PHP Imagick extension with HEIC/HEIF support. JPEG, PNG, and WebP compression still works.', 'form-image-upload-optimizer'); ?></p>
+                    <p><?php esc_html_e('HEIC/HEIF to JPG conversion is not currently available on this server. Ask the host to enable the PHP Imagick extension with HEIC/HEIF support. JPEG, PNG, and WebP compression still works.', 'ardalo-form-upload-optimizer'); ?></p>
                 </div>
             <?php endif; ?>
             <form method="post" action="options.php">
-                <?php settings_fields('form_image_upload_optimizer'); ?>
+                <?php settings_fields('ardalo_form_upload_optimizer'); ?>
                 <table class="form-table" role="presentation">
                     <tr>
-                        <th scope="row"><?php esc_html_e('Enable compression', 'form-image-upload-optimizer'); ?></th>
+                        <th scope="row"><?php esc_html_e('Enable compression', 'ardalo-form-upload-optimizer'); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="<?php echo esc_attr(self::OPTION_NAME); ?>[enabled]" value="1" <?php checked(1, $options['enabled']); ?>>
-                                <?php esc_html_e('Optimize form image uploads', 'form-image-upload-optimizer'); ?>
+                                <?php esc_html_e('Optimize form image uploads', 'ardalo-form-upload-optimizer'); ?>
                             </label>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><label for="gnh_jpeg_quality"><?php esc_html_e('JPEG quality', 'form-image-upload-optimizer'); ?></label></th>
-                        <td><input id="gnh_jpeg_quality" type="number" min="40" max="95" name="<?php echo esc_attr(self::OPTION_NAME); ?>[jpeg_quality]" value="<?php echo esc_attr((string) $options['jpeg_quality']); ?>"> <span class="description">40-95; lower means smaller files.</span></td>
+                        <th scope="row"><label for="ardalo_jpeg_quality"><?php esc_html_e('JPEG quality', 'ardalo-form-upload-optimizer'); ?></label></th>
+                        <td><input id="ardalo_jpeg_quality" type="number" min="40" max="95" name="<?php echo esc_attr(self::OPTION_NAME); ?>[jpeg_quality]" value="<?php echo esc_attr((string) $options['jpeg_quality']); ?>"> <span class="description">40-95; lower means smaller files.</span></td>
                     </tr>
                     <tr>
-                        <th scope="row"><label for="gnh_webp_quality"><?php esc_html_e('WebP quality', 'form-image-upload-optimizer'); ?></label></th>
-                        <td><input id="gnh_webp_quality" type="number" min="40" max="95" name="<?php echo esc_attr(self::OPTION_NAME); ?>[webp_quality]" value="<?php echo esc_attr((string) $options['webp_quality']); ?>"></td>
+                        <th scope="row"><label for="ardalo_webp_quality"><?php esc_html_e('WebP quality', 'ardalo-form-upload-optimizer'); ?></label></th>
+                        <td><input id="ardalo_webp_quality" type="number" min="40" max="95" name="<?php echo esc_attr(self::OPTION_NAME); ?>[webp_quality]" value="<?php echo esc_attr((string) $options['webp_quality']); ?>"></td>
                     </tr>
                     <tr>
-                        <th scope="row"><label for="gnh_png_compression"><?php esc_html_e('PNG compression', 'form-image-upload-optimizer'); ?></label></th>
-                        <td><input id="gnh_png_compression" type="number" min="0" max="9" name="<?php echo esc_attr(self::OPTION_NAME); ?>[png_compression]" value="<?php echo esc_attr((string) $options['png_compression']); ?>"> <span class="description">0-9; 9 is smallest but slower.</span></td>
+                        <th scope="row"><label for="ardalo_png_compression"><?php esc_html_e('PNG compression', 'ardalo-form-upload-optimizer'); ?></label></th>
+                        <td><input id="ardalo_png_compression" type="number" min="0" max="9" name="<?php echo esc_attr(self::OPTION_NAME); ?>[png_compression]" value="<?php echo esc_attr((string) $options['png_compression']); ?>"> <span class="description">0-9; 9 is smallest but slower.</span></td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Maximum dimensions', 'form-image-upload-optimizer'); ?></th>
+                        <th scope="row"><?php esc_html_e('Maximum dimensions', 'ardalo-form-upload-optimizer'); ?></th>
                         <td>
                             <input type="number" min="0" max="8000" name="<?php echo esc_attr(self::OPTION_NAME); ?>[max_width]" value="<?php echo esc_attr((string) $options['max_width']); ?>" style="width: 90px;"> ×
                             <input type="number" min="0" max="8000" name="<?php echo esc_attr(self::OPTION_NAME); ?>[max_height]" value="<?php echo esc_attr((string) $options['max_height']); ?>" style="width: 90px;"> px
-                            <p class="description"><?php esc_html_e('Use 0 for either side to avoid limiting that dimension. Default 1600 × 1600 keeps uploaded images useful while greatly reducing size.', 'form-image-upload-optimizer'); ?></p>
+                            <p class="description"><?php esc_html_e('Use 0 for either side to avoid limiting that dimension. Default 1600 × 1600 keeps uploaded images useful while greatly reducing size.', 'ardalo-form-upload-optimizer'); ?></p>
                         </td>
                     </tr>
                     <tr>
-                        <th scope="row"><label for="gnh_min_size_kb"><?php esc_html_e('Only compress files larger than', 'form-image-upload-optimizer'); ?></label></th>
-                        <td><input id="gnh_min_size_kb" type="number" min="0" max="51200" name="<?php echo esc_attr(self::OPTION_NAME); ?>[min_size_kb]" value="<?php echo esc_attr((string) $options['min_size_kb']); ?>"> KB</td>
+                        <th scope="row"><label for="ardalo_min_size_kb"><?php esc_html_e('Only compress files larger than', 'ardalo-form-upload-optimizer'); ?></label></th>
+                        <td><input id="ardalo_min_size_kb" type="number" min="0" max="51200" name="<?php echo esc_attr(self::OPTION_NAME); ?>[min_size_kb]" value="<?php echo esc_attr((string) $options['min_size_kb']); ?>"> KB</td>
                     </tr>
                     <tr>
-                        <th scope="row"><?php esc_html_e('Safety', 'form-image-upload-optimizer'); ?></th>
+                        <th scope="row"><?php esc_html_e('Safety', 'ardalo-form-upload-optimizer'); ?></th>
                         <td>
                             <label>
                                 <input type="checkbox" name="<?php echo esc_attr(self::OPTION_NAME); ?>[keep_original_if_larger]" value="1" <?php checked(1, $options['keep_original_if_larger']); ?>>
-                                <?php esc_html_e('Keep the original if compression would make the file larger', 'form-image-upload-optimizer'); ?>
+                                <?php esc_html_e('Keep the original if compression would make the file larger', 'ardalo-form-upload-optimizer'); ?>
                             </label>
                         </td>
                     </tr>
@@ -717,4 +717,4 @@ final class FormImageUploadOptimizer
     }
 }
 
-FormImageUploadOptimizer::init();
+ArdaloFormUploadOptimizer::init();
