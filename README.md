@@ -1,6 +1,6 @@
-# Ardalo Form Upload Optimizer
+# PicPrune Form Uploads
 
-Ardalo Form Upload Optimizer is a lightweight WordPress plugin for websites that receive image uploads through forms.
+PicPrune Form Uploads is a lightweight WordPress plugin for websites that receive image uploads through forms.
 
 Many form submissions include large phone photos. Those files can make notification emails heavy, fill mailboxes, slow down workflows, and consume unnecessary server storage. This plugin optimizes uploaded images server-side before they are attached to form emails or stored through normal WordPress upload handling.
 
@@ -16,7 +16,7 @@ Many form submissions include large phone photos. Those files can make notificat
 - Includes compatibility for **Drag and Drop Multiple File Upload for Contact Form 7** by optimizing uploaded file URLs before that add-on builds email attachments.
 - Skips small files below a configurable threshold.
 - Keeps the original file if optimization would make it larger.
-- Adds a settings page under **Settings → Ardalo Form Upload Optimizer**.
+- Adds a settings page under **Settings → PicPrune Form Uploads**.
 
 ## Who this is for
 
@@ -33,9 +33,9 @@ Use this plugin if your WordPress site has forms where visitors upload images, f
 
 ## Installation
 
-1. Upload the `ardalo-form-upload-optimizer` folder to `wp-content/plugins/`, or install the ZIP from WordPress Admin → Plugins → Add New → Upload Plugin.
-2. Activate **Ardalo Form Upload Optimizer**.
-3. Go to **Settings → Ardalo Form Upload Optimizer**.
+1. Upload the `picprune-form-uploads` folder to `wp-content/plugins/`, or install the ZIP from WordPress Admin → Plugins → Add New → Upload Plugin.
+2. Activate **PicPrune Form Uploads**.
+3. Go to **Settings → PicPrune Form Uploads**.
 4. Submit a test form with image attachments.
 5. Confirm the received email attachments are smaller and visually acceptable.
 
@@ -78,13 +78,13 @@ Other form plugins may work if they use the standard WordPress upload pipeline. 
 Run a syntax check:
 
 ```bash
-php -l ardalo-form-upload-optimizer/ardalo-form-upload-optimizer.php
+php -l picprune-form-uploads/picprune-form-uploads.php
 ```
 
 Build an installable ZIP from the parent directory:
 
 ```bash
-zip -r ardalo-form-upload-optimizer.zip ardalo-form-upload-optimizer
+zip -r picprune-form-uploads.zip picprune-form-uploads
 ```
 
 ## License

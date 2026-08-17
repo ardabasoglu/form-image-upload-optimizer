@@ -1,8 +1,12 @@
 # Changelog
 
+## 1.3.0
+
+- Rename plugin to PicPrune Form Uploads and update the text domain/slug for WordPress.org review.
+
 ## 1.2.0
 
-- Rename plugin to Ardalo Form Upload Optimizer and update the text domain/slug for WordPress.org review.
+- Rename plugin and update the text domain/slug for WordPress.org review.
 
 ## 1.1.3
 
